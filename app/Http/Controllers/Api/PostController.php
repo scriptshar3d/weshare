@@ -41,7 +41,8 @@ class PostController extends Controller
                     ->where('type', config('constants.POST_ACTIVITY_COMMENT'));
             }
         ];
-        $posts = Post::orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
+        $following = response()->json($profile->followings()->pluck('id'));
+        $posts = Post::whereIn('user_profile_id', $following)->orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
         return response()->json($posts);
     }
 

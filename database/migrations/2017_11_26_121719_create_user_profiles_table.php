@@ -17,11 +17,13 @@ class CreateUserProfilesTable extends Migration
             $table->increments('id');
             $table->string('user_id');
             $table->string('name');
+            $table->string('image');
             $table->enum('gender', config('constants.enums.gender'));
             $table->string('fcm_registration_id')->nullable();
             $table->boolean('notification_on_like')->default(true);
             $table->boolean('notification_on_dislike')->default(true);
             $table->boolean('notification_on_comment')->default(true);
+            $table->boolean('is_admin')->default(false);
             $table->timestamps();
         });
     }

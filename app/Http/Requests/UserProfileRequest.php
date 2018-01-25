@@ -29,7 +29,8 @@ class UserProfileRequest extends FormRequest
             'fcm_registration_id' => ['required'],
             'notification_on_like' => ['required'],
             'notification_on_dislike' => ['required'],
-            'notification_on_comment' => ['required']
+            'notification_on_comment' => ['required'],
+            'image' => ['string']
         ];
     }
 }

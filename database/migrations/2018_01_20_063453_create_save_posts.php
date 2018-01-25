@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersPostsTable extends Migration
+class CreateSavePosts extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,21 @@ class CreateUsersPostsTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_posts', function (Blueprint $table) {
+        Schema::create('save_posts', function (Blueprint $table) {
             $table->integer('user_id')->unsigned();
             $table->integer('post_id')->unsigned();
 
             /*
              * Add Foreign/Unique/Index
              */
-            $table->foreign('user_id', 'foreign_user')
+            $table->foreign('user_id', 'save_foreign_user')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
 
-            $table->foreign('post_id', 'foreign_role')
+            $table->foreign('post_id', 'save_foreign_post')
                 ->references('id')
-                ->on('posts')
+                ->on('roles')
                 ->onDelete('cascade');
 
             $table->unique(['user_id', 'post_id']);
@@ -41,6 +41,14 @@ class CreateUsersPostsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('save');
+        Schema::table('save_posts', function (Blueprint $table) {
+            $table->dropForeign('save_foreign_user');
+            $table->dropForeign('save_foreign_post');
+        });
+
+        /*
+         * Drop tables
+         */
+        Schema::dropIfExists('users_roles');
     }
 }

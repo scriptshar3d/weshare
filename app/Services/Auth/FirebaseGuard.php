@@ -51,8 +51,10 @@ class FirebaseGuard implements Guard
                 if($decoded->iss !== config('firebase.iss')) {
                     throw new \Exception;
                 }
-		$name = property_exists($decoded, 'name') ? $decode->name : '';
-                $firebaseUser = new FirebaseUser($name, $decoded->user_id);
+		        $name = property_exists($decoded, 'name') ? $decoded->name : '';
+		        $email = property_exists($decoded, 'email') ? $decoded->email : '';
+		        $image = property_exists($decoded, 'picture') ? $decoded->picture : '';
+                $firebaseUser = new FirebaseUser($name, $decoded->user_id, $email, $image);
                 $this->setUser($firebaseUser);
                 return true;
             } catch(\Exception $ex) {

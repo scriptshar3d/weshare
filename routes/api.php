@@ -16,6 +16,10 @@ use Illuminate\Http\Request;
 Route::group(['as' => 'api.', 'namespace' => 'Api', 'middleware' => 'auth:firebase'], function () {
     Route::post('profile', 'UserProfileController@store')->name('profile.create');
     Route::get('profile', 'UserProfileController@show')->name('profile.show');
+    Route::post('profile/search', 'UserProfileController@search')->name('profile.search');
+    Route::post('profile/follow/{$userProfile}', 'UserProfileController@follow')->name('profile.follow');
+
+    Route::get('categories', 'CategoryController@index')->name('category.index');
 
     Route::get('posts', 'PostController@index')->name('post.index');
     Route::post('posts', 'PostController@store')->name('post.create');

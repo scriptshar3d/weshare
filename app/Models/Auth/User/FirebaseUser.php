@@ -10,10 +10,14 @@ class FirebaseUser implements Authenticatable
 {
     public $name;
     public $id;
+    public $email;
+    public $image;
 
-    public function __construct($name, $firebaseUid) {
+    public function __construct($name, $firebaseUid, $email, $image) {
         $this->name = $name;
         $this->id = $firebaseUid;
+        $this->email = $email;
+        $this->image = $image;
     }
 
     /**

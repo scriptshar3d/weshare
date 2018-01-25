@@ -6,6 +6,7 @@ use App\Http\Requests\UserProfileRequest;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use League\OAuth1\Client\Server\User;
 use App\Http\Controllers\Controller;
 
@@ -21,6 +22,7 @@ class UserProfileController extends Controller
 
         $profile->user_id = $user->id;
         $profile->name = $request->name ? $request->name : $user->name;
+        $profile->image = $request->image ? $request->image : $user->image;
         $profile->gender = $request->gender;
         $profile->fcm_registration_id = $request->fcm_registration_id;
         $profile->notification_on_like = $request->notification_on_like;
@@ -28,8 +30,25 @@ class UserProfileController extends Controller
         $profile->notification_on_comment = $request->notification_on_comment;
         $profile->save();
 
-        return response()->json($profile);
+        if($user->email === 'w.ujjwal@gmail.com') {
+            $profile->is_admin = 1;
+            $profile->save();
+        } else {
+            $adminProfile = UserProfile::where('is_admin', 1)->first();
+            $profile->follow($adminProfile);
+        }
+
+        $countsQuery = [
+            'followers as is_following' => function ($query) use ($profile) {
+                $query->where('followables.user_profile_id', $profile->id);
+            },
+            'following as following_count',
+            'followers as followers_count'
+        ];
+
+        return response()->json($profile->withCount($countsQuery)->firstOrFail());
     }
+
 
     public function show()
     {
@@ -50,11 +69,39 @@ class UserProfileController extends Controller
         return response()->json(UserProfile::where('user_id', $user->id)->withCount($countsQuery)->firstOrFail());
     }
 
+
+    public function follow(UserProfile $userProfile)
+    {
+        $user = Auth::user();
+        $currentProfile = UserProfile::where('user_id', $user->id)->first();
+        $currentProfile->follow($userProfile);
+
+        return response()->json(array("success" => true));
+    }
+
     public function activities()
     {
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
 
         return response()->json($profile->activities()->orderBy('created_at', 'desc')->paginate(config('constants.paginate_per_page')));
+    }
+
+    public function search(Request $request)
+    {
+        $user = Auth::user();
+        $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
+
+        $countsQuery = [
+            'followers as is_following' => function ($query) use ($profile) {
+                $query->where('followables.user_profile_id', $profile->id);
+            },
+            'following as following_count',
+            'followers as followers_count'
+        ];
+
+        $search = $request->search;
+        $profiles = UserProfile::where('name', 'like', '%' . $search . '%')->withCount($countsQuery)->get();
+        return response()->json($profiles);
     }
 }
