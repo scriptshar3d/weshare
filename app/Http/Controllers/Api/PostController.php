@@ -6,6 +6,7 @@ use App\Helpers\PostHelper;
 use App\Http\Requests\CreatePostRequest;
 use App\Models\Post;
 use App\Models\PostActivity;
+use App\Models\ReportPost;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -148,13 +149,13 @@ class PostController extends Controller
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->first();
         $post = new Post();
-	$post->title = $request->title;
+	    $post->title = $request->title;
         $post->text = $request->text;
         $post->media_url = $request->media_url;
         $post->type = $request->type;
         $post->user_profile_id = $profile->id;
         $post->video_thumbnail_url = $request->video_thumbnail_url;
-	$post->category_id = $request->category_id;
+	    $post->category_id = $request->category_id;
         $post->save();
 
         return response()->json(Post::find($post->id));
@@ -165,6 +166,17 @@ class PostController extends Controller
         $deleted = $post->delete();
         $status = $deleted ? 200 : 400;
         return response()->json(null, $status);
+    }
+
+    public function report(Post $post)
+    {
+        $user = Auth::user();
+        $profile = UserProfile::where('user_id', $user->id)->first();
+        $report = new ReportPost();
+        $report->post_id = $post->id;
+        $report->user_profile_id = $profile->id;
+        $report->save();
+        return $report;
     }
 
     private function likeDislikePost($post, $type)

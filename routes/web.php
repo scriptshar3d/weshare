@@ -36,7 +36,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::put('users/{user}', 'UserController@update')->name('users.update');
     Route::delete('users/{user}', 'UserController@destroy')->name('users.destroy');
 
-    //User Profile
+    // Categories
+    Route::get('categories', 'CategoryController@index')->name('categories');
+    Route::get('categories/create', 'CategoryController@create')->name('categories.create');
+    Route::post('categories', 'CategoryController@store')->name('categories.store');
+    Route::get('categories/{category}', 'CategoryController@show')->name('categories.show');
+    Route::get('categories/{category}/edit', 'CategoryController@edit')->name('categories.edit');
+    Route::put('categories/{category}', 'CategoryController@update')->name('categories.update');
+    Route::get('categories/{category}/delete', 'CategoryController@destroy')->name('categories.destroy');
+
+    // Profiles
     Route::get('profiles', 'UserProfileController@index')->name('profiles');
     Route::get('profiles/{profile}', 'UserProfileController@show')->name('profiles.show');
     Route::get('profiles/{profile}/edit', 'UserProfileController@edit')->name('profiles.edit');
@@ -47,6 +56,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('posts', 'PostController@index')->name('posts');
     Route::get('posts/{post}', 'PostController@show')->name('posts.show');
     Route::get('posts/{post}/delete', 'PostController@destroy')->name('posts.destroy');
+
+    // Reported Posts
+    Route::get('reports', 'ReportController@index')->name('reports');
+
 
     //Posts Activity
     Route::get('activities', 'PostActivityController@index')->name('postactivities');

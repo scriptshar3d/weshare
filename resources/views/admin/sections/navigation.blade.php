@@ -32,6 +32,18 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.categories') }}">
+                            <i class="fa fa-tags" aria-hidden="true"></i>
+                            Categories
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.reports') }}">
+                            <i class="fa fa-tags" aria-hidden="true"></i>
+                            Reports
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.users') }}">
                             <i class="fa fa-user-o" aria-hidden="true"></i>
                             Admin Users

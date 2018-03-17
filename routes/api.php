@@ -30,6 +30,7 @@ Route::group(['as' => 'api.', 'namespace' => 'Api', 'middleware' => 'auth:fireba
     Route::post('posts/{post}/like', 'PostController@like')->name('post.like');
     Route::post('posts/{post}/dislike', 'PostController@dislike')->name('post.dislike');
     Route::post('posts/{post}/share', 'PostController@share')->name('post.share');
+    Route::get('posts/{post}/report', 'PostController@report')->name('post.report');
 
     Route::get('posts/{post}/comments', 'CommentController@index')->name('comment.index');
     Route::post('posts/{post}/comments', 'CommentController@store')->name('comment.create');
