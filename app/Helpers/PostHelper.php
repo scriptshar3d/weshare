@@ -8,7 +8,8 @@
 
 namespace App\Helpers;
 
-
+use App\Models\Post;
+use App\Models\UserProfile;
 use App\Models\CommentActivity;
 use App\Models\PostActivity;
 
@@ -48,7 +49,8 @@ class PostHelper
                 $data = ["post_id" => $postId];
                 break;
         }
-        PushNotificationHelper::send($profile->fcm_registration_id, $title, $body, $data);
+	$notifyUser = UserProfile::find(Post::find($postId)->user_profile_id)->first();
+        PushNotificationHelper::send($notifyUser->fcm_registration_id, $title, $body, $data);
     }
 
     static function createCommentActivity($profile, $commentId, $type)
@@ -72,6 +74,7 @@ class PostHelper
                 $data = ["comment_id" => $commentId];
                 break;
         }
-        PushNotificationHelper::send($profile->fcm_registration_id, $title, $body, $data);
+	$notifyUser = UserProfile::find(Post::find($postId)->user_profile_id)->first();
+        PushNotificationHelper::send($notifyUser->fcm_registration_id, $title, $body, $data);
     }
 }

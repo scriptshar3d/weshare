@@ -2,7 +2,7 @@
     <div class="left_col scroll-view">
         <!-- menu profile quick info -->
         <div class="navbar nav_title" style="border: 0;">
-            <a href="index.html" class="site_title"><span>Foxy Admin</span></a>
+            <a href="index.html" class="site_title"><span>Owhlo Admin</span></a>
         </div>
         <!-- /menu profile quick info -->
 

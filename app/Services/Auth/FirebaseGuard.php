@@ -48,6 +48,7 @@ class FirebaseGuard implements Guard
         if($token) {
             try {
                 $decoded = JWT::decode($token, $kids, array('RS256'));
+
                 if($decoded->iss !== config('firebase.iss')) {
                     throw new \Exception;
                 }

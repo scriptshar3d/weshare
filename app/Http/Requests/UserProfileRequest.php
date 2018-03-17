@@ -25,6 +25,7 @@ class UserProfileRequest extends FormRequest
     public function rules()
     {
         return [
+	    'update' => ['required', 'string'], // is update request or not
             'gender' => ['required', Rule::in(config('constants.enums.gender'))],
             'fcm_registration_id' => ['required'],
             'notification_on_like' => ['required'],

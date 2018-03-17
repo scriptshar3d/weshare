@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
@@ -41,8 +41,15 @@ class PostController extends Controller
                     ->where('type', config('constants.POST_ACTIVITY_COMMENT'));
             }
         ];
-        $following = response()->json($profile->followings()->pluck('id'));
-        $posts = Post::whereIn('user_profile_id', $following)->orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
+        $following = array_merge($profile->followings()->pluck('id')->all(), [$profile->id]);
+        $posts = Post::whereIn('user_profile_id', $following);
+	if($request->type) {
+		$posts = $posts->where('type', $request->type);
+	}
+	if($request->user_profile_id) {
+		$posts = $posts->where('user_profile_id', $request->user_profile_id);
+	}
+	$posts = $posts->orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
         return response()->json($posts);
     }
 
@@ -77,7 +84,7 @@ class PostController extends Controller
         return response()->json(Post::where('id', $post->id)->withCount($countsQuery)->first());
     }
 
-    public function myposts()
+    public function myposts(Request $request)
     {
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
@@ -105,7 +112,14 @@ class PostController extends Controller
                     ->where('type', config('constants.POST_ACTIVITY_COMMENT'));
             }
         ];
-        $posts = Post::where('user_profile_id', $profile->id)->orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
+
+	$posts = Post::where('user_profile_id', $profile->id);
+
+	if($request->type) {
+                $posts = $posts->where('type', $request->type);
+        }
+
+        $posts = $posts->orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
         return response()->json($posts);
     }
 
@@ -134,11 +148,13 @@ class PostController extends Controller
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->first();
         $post = new Post();
+	$post->title = $request->title;
         $post->text = $request->text;
         $post->media_url = $request->media_url;
         $post->type = $request->type;
         $post->user_profile_id = $profile->id;
         $post->video_thumbnail_url = $request->video_thumbnail_url;
+	$post->category_id = $request->category_id;
         $post->save();
 
         return response()->json(Post::find($post->id));
@@ -168,6 +184,8 @@ class PostController extends Controller
                 return -1; // unlike or undislike
             }
         }
+
+	if($post->user_profile_id == $profile->id) { return 1; }
 
         PostHelper::createPostActivity($profile, $post->id, $type);
         return 1; // like or dislike

@@ -21,16 +21,25 @@ class UserProfileController extends Controller
         }
 
         $profile->user_id = $user->id;
-        $profile->name = $request->name ? $request->name : $user->name;
-        $profile->image = $request->image ? $request->image : $user->image;
-        $profile->gender = $request->gender;
-        $profile->fcm_registration_id = $request->fcm_registration_id;
-        $profile->notification_on_like = $request->notification_on_like;
-        $profile->notification_on_dislike = $request->notification_on_dislike;
-        $profile->notification_on_comment = $request->notification_on_comment;
+	if($request->update == "1") {
+                $profile->name = $request->name ? $request->name : $user->name;
+                $profile->image = $request->image ? $request->image : $user->image;
+                $profile->gender = $request->gender;
+                $profile->fcm_registration_id = $request->fcm_registration_id;
+                $profile->notification_on_like = $request->notification_on_like;
+                $profile->notification_on_dislike = $request->notification_on_dislike;
+                $profile->notification_on_comment = $request->notification_on_comment;
+        } else {
+                $profile->name = $profile->name ? $profile->name : $user->name;
+                $profile->image = $profile->image ? $profile->image : $user->image;
+                $profile->gender = $profile->gender ? $profile->gender : $request->gender;
+                $profile->fcm_registration_id = $request->fcm_registration_id;
+                $profile->notification_on_like = $profile->notification_on_like ? $profile->notification_on_like : $request->notification_on_like;
+                $profile->notification_on_dislike = $profile->notification_on_dislike ? $profile->notification_on_dislike : $request->notification_on_dislike;
+                $profile->notification_on_comment = $profile->notification_on_comment ? $profile->notification_on_comment : $request->notification_on_comment;
+        }
         $profile->save();
-
-        if($user->email === 'w.ujjwal@gmail.com') {
+        if($user->email === 'owhloapp@gmail.com') {
             $profile->is_admin = 1;
             $profile->save();
         } else {
@@ -45,14 +54,14 @@ class UserProfileController extends Controller
             'following as following_count',
             'followers as followers_count'
         ];
-
-        return response()->json($profile->withCount($countsQuery)->firstOrFail());
+        return response()->json(UserProfile::where('id', $profile->id)->withCount($countsQuery)->firstOrFail());
     }
 
 
-    public function show()
+    public function show(UserProfile $userProfile)
     {
         $user = Auth::user();
+	$profile = UserProfile::where('user_id', $user->id)->firstOrFail();
 
         $countsQuery = [
             'posts as posts_count',
@@ -64,19 +73,77 @@ class UserProfileController extends Controller
             },
             'activities as comment_count' => function ($query) {
                 $query->where('post_activities.type', config('constants.POST_ACTIVITY_COMMENT'));
-            }
+            },
+	    'followers as is_following' => function ($query) use ($profile) {
+                $query->where('followables.user_profile_id', $profile->id);
+            },
+            'following as following_count',
+            'followers as followers_count'
         ];
-        return response()->json(UserProfile::where('user_id', $user->id)->withCount($countsQuery)->firstOrFail());
+        return response()->json(UserProfile::where('id', $userProfile->id)->withCount($countsQuery)->firstOrFail());
     }
 
 
     public function follow(UserProfile $userProfile)
     {
+	$success = 0; // no action
         $user = Auth::user();
         $currentProfile = UserProfile::where('user_id', $user->id)->first();
-        $currentProfile->follow($userProfile);
+	if($currentProfile->isFollowing($userProfile)) {
+		$currentProfile->unfollow($userProfile);
+		$success = 1; // unfollow
+	} else {
+	        $currentProfile->follow($userProfile);
+		$success = 2; // follow
+	}
+        return response()->json(array("success" => $success));
+    }
 
-        return response()->json(array("success" => true));
+    public function followers(UserProfile $userProfile)
+    {
+        $user = Auth::user();
+        $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
+
+        $ids = $userProfile->followers()->pluck('user_profile_id')->all();
+
+        $profiles = UserProfile::whereIn('id', $ids);
+
+        $countsQuery = [
+            'followers as is_following' => function ($query) use ($profile) {
+                $query->where('followables.user_profile_id', $profile->id);
+            },
+            'following as following_count',
+            'followers as followers_count'
+        ];
+
+
+        return response()->json($profiles->withCount($countsQuery)->paginate(config('constants.paginate_per_page')));
+        //return response()->json($userProfile->followers()->withCount($countsQuery)->get());
+        //return response()->json($userProfile->followers()->get());
+
+    }
+
+    public function following(UserProfile $userProfile)
+    {
+        $user = Auth::user();
+        $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
+
+        $ids = $userProfile->followings()->pluck('id')->all();
+
+        $profiles = UserProfile::whereIn('id', $ids);
+
+        $countsQuery = [
+            'followers as is_following' => function ($query) use ($profile) {
+                $query->where('followables.user_profile_id', $profile->id);
+            },
+            'following as following_count',
+            'followers as followers_count'
+        ];
+
+
+        return response()->json($profiles->withCount($countsQuery)->paginate(config('constants.paginate_per_page')));
+
+        //return response()->json($userProfile->followings()->get());
     }
 
     public function activities()
@@ -101,7 +168,7 @@ class UserProfileController extends Controller
         ];
 
         $search = $request->search;
-        $profiles = UserProfile::where('name', 'like', '%' . $search . '%')->withCount($countsQuery)->get();
+        $profiles = UserProfile::where('name', 'like', '%' . $search . '%')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
         return response()->json($profiles);
     }
 }
