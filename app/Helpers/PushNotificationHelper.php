@@ -20,6 +20,9 @@ class PushNotificationHelper
 {
     static function send($token, $title, $body, $data)
     {
+        $data['title'] = $title;
+        $data['body'] = $body;
+
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
 
@@ -34,6 +37,6 @@ class PushNotificationHelper
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
 
-        FCM::sendTo($token, $option, $notification, $data);
+        FCM::sendTo($token, $option, null, $data);
     }
 }

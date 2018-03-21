@@ -23,33 +23,37 @@ class PostHelper
         $activity->type = $type;
         $activity->save();
 
+        if (Post::find($postId)->user_profile_id->id == $profile->id) {
+            return 1;
+        }
+
         $title = "New Activity on your post";
         $body = null;
         $data = array();
-        switch($type) {
+        switch ($type) {
             case config('constants.POST_ACTIVITY_LIKE'):
-                if(!$profile->notification_on_like) {
+                if (!$profile->notification_on_like) {
                     return;
                 }
                 $body = "Someone liked your post";
                 $data = ["post_id" => $postId];
                 break;
             case config('constants.POST_ACTIVITY_DISLIKE'):
-                if(!$profile->notification_on_dislike) {
+                if (!$profile->notification_on_dislike) {
                     return;
                 }
                 $body = "Someone disliked your post";
                 $data = ["post_id" => $postId];
                 break;
             case config('constants.POST_ACTIVITY_COMMENT'):
-                if(!$profile->notification_on_comment) {
+                if (!$profile->notification_on_comment) {
                     return;
                 }
                 $body = "Someone commented on your post";
                 $data = ["post_id" => $postId];
                 break;
         }
-	$notifyUser = UserProfile::find(Post::find($postId)->user_profile_id)->first();
+        $notifyUser = UserProfile::find(Post::find($postId)->user_profile_id)->first();
         PushNotificationHelper::send($notifyUser->fcm_registration_id, $title, $body, $data);
     }
 
@@ -61,10 +65,14 @@ class PostHelper
         $activity->type = $type;
         $activity->save();
 
+        if (Comment::find($commentId)->user_profile_id->id == $profile->id) {
+            return 1;
+        }
+
         $title = "New Activity on your post";
         $body = "";
         $data = array();
-        switch($type) {
+        switch ($type) {
             case config('constants.POST_ACTIVITY_LIKE'):
                 $body = "Someone liked your comment";
                 $data = ["comment_id" => $commentId];
@@ -74,7 +82,7 @@ class PostHelper
                 $data = ["comment_id" => $commentId];
                 break;
         }
-	$notifyUser = UserProfile::find(Post::find($postId)->user_profile_id)->first();
+        $notifyUser = UserProfile::find(Post::find($postId)->user_profile_id)->first();
         PushNotificationHelper::send($notifyUser->fcm_registration_id, $title, $body, $data);
     }
 }

@@ -197,8 +197,6 @@ class PostController extends Controller
             }
         }
 
-	if($post->user_profile_id == $profile->id) { return 1; }
-
         PostHelper::createPostActivity($profile, $post->id, $type);
         return 1; // like or dislike
     }
