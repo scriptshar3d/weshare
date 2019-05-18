@@ -33,6 +33,6 @@ class UserProfile extends Model
 
     public function following()
     {
-        return $this->hasMany('Overtrue\LaravelFollow\FollowRelation');
+        return $this->hasMany('Overtrue\LaravelFollow\FollowRelation', 'user_profile_id');
     }
 }

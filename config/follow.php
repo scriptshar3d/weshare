@@ -35,4 +35,6 @@ return [
      * Namespace of models.
      */
     'model_namespace' => 'App',
+
+    'users_table_foreign_key' => 'user_profile_id'
 ];
