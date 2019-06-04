@@ -28,7 +28,6 @@ class CreatePostRequest extends FormRequest
 	    'title' => 'string',
             'text' => 'required_without:media_url',
             'media_url' => 'required_without:text',
-            'category_id' => 'required',
             'type' => ['required', Rule::in(config('constants.enums.post_type'))]
         ];
     }

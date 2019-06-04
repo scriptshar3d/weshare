@@ -44,13 +44,13 @@ class PostController extends Controller
         ];
         $following = array_merge($profile->followings()->pluck('id')->all(), [$profile->id]);
         $posts = Post::whereIn('user_profile_id', $following);
-	if($request->type) {
-		$posts = $posts->where('type', $request->type);
-	}
-	if($request->user_profile_id) {
-		$posts = $posts->where('user_profile_id', $request->user_profile_id);
-	}
-	$posts = $posts->orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
+        if ($request->type) {
+            $posts = $posts->where('type', $request->type);
+        }
+        if ($request->user_profile_id) {
+            $posts = $posts->where('user_profile_id', $request->user_profile_id);
+        }
+        $posts = $posts->orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
         return response()->json($posts);
     }
 
@@ -114,13 +114,33 @@ class PostController extends Controller
             }
         ];
 
-	$posts = Post::where('user_profile_id', $profile->id);
+        $posts = Post::where('user_profile_id', $profile->id);
 
-	if($request->type) {
-                $posts = $posts->where('type', $request->type);
+        if ($request->type) {
+            $posts = $posts->where('type', $request->type);
         }
 
         $posts = $posts->orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
+        return response()->json($posts);
+    }
+
+    public function storyUsers()
+    {
+        $user = Auth::user();
+        $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
+        $following = array_merge($profile->followings()->pluck('id')->all(), [$profile->id]);
+        $users = Post::whereIn('user_profile_id', $following)->where('is_story', true)->get()->pluck('user_profile_id')->all();
+        $userIds = [];
+        foreach ($users as $user) {
+            $userIds[] = $user->id;
+        }
+        return response()->json(UserProfile::whereIn('id', $userIds)->get());
+    }
+
+    public function stories(UserProfile $userProfile)
+    {
+        $posts = Post::where('user_profile_id', $userProfile->id)->where('is_story', true)
+            ->orderBy('created_at', 'desc')->get();
         return response()->json($posts);
     }
 
@@ -149,13 +169,13 @@ class PostController extends Controller
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->first();
         $post = new Post();
-	    $post->title = $request->title;
+        $post->title = $request->title;
         $post->text = $request->text;
         $post->media_url = $request->media_url;
         $post->type = $request->type;
         $post->user_profile_id = $profile->id;
         $post->video_thumbnail_url = $request->video_thumbnail_url;
-	    $post->category_id = $request->category_id;
+        $post->is_story = $request->is_story ? true : false;
         $post->save();
 
         return response()->json(Post::find($post->id));

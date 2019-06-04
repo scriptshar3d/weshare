@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 18, 2019 at 12:31 PM
+-- Generation Time: Jun 04, 2019 at 12:27 PM
 -- Server version: 10.1.33-MariaDB
 -- PHP Version: 7.2.6
 
@@ -145,6 +145,7 @@ CREATE TABLE `posts` (
   `share_count` int(11) NOT NULL DEFAULT '0',
   `video_thumbnail_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `text_location_on_video` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_story` tinyint(1) NOT NULL DEFAULT '0',
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -238,7 +239,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `active`, `confirmation_code`, `confirmed`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'Admin', 'admin@example.com', '$2y$10$74rWr.j7W2EhDKsAXbHvEeCalviVyZm/jA9Jmeh0Gqjt5fnNEH27.', 1, 'db2305d3-9848-4b46-95d8-6ab4d2000e65', 1, NULL, '2019-05-18 05:01:37', '2019-05-18 05:01:37', NULL);
+(1, 'Admin', 'admin@example.com', '$2y$10$cKqMY5wGwDuzcgDjDlNlNu.Wjfu7TojALKBtUUrP1g0.A1lvJxyV.', 1, '461009e9-6d45-4327-91c2-704e7ac9b68f', 1, NULL, '2019-06-04 04:57:42', '2019-06-04 04:57:42', NULL);
 
 -- --------------------------------------------------------
 

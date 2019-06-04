@@ -21,25 +21,25 @@ class UserProfileController extends Controller
         }
 
         $profile->user_id = $user->id;
-	if($request->update == "1") {
-                $profile->name = $request->name ? $request->name : $user->name;
-                $profile->image = $request->image ? $request->image : $user->image;
-                $profile->gender = $request->gender;
-                $profile->fcm_registration_id = $request->fcm_registration_id;
-                $profile->notification_on_like = $request->notification_on_like;
-                $profile->notification_on_dislike = $request->notification_on_dislike;
-                $profile->notification_on_comment = $request->notification_on_comment;
+        if ($request->update == "1") {
+            $profile->name = $request->name ? $request->name : $user->name;
+            $profile->image = $request->image ? $request->image : $user->image;
+            $profile->gender = $request->gender;
+            $profile->fcm_registration_id = $request->fcm_registration_id;
+            $profile->notification_on_like = $request->notification_on_like;
+            $profile->notification_on_dislike = $request->notification_on_dislike;
+            $profile->notification_on_comment = $request->notification_on_comment;
         } else {
-                $profile->name = $profile->name ? $profile->name : $user->name;
-                $profile->image = $profile->image ? $profile->image : $user->image;
-                $profile->gender = $profile->gender ? $profile->gender : $request->gender;
-                $profile->fcm_registration_id = $request->fcm_registration_id;
-                $profile->notification_on_like = $profile->notification_on_like ? $profile->notification_on_like : $request->notification_on_like;
-                $profile->notification_on_dislike = $profile->notification_on_dislike ? $profile->notification_on_dislike : $request->notification_on_dislike;
-                $profile->notification_on_comment = $profile->notification_on_comment ? $profile->notification_on_comment : $request->notification_on_comment;
+            $profile->name = $profile->name ? $profile->name : $user->name;
+            $profile->image = $profile->image ? $profile->image : $user->image;
+            $profile->gender = $profile->gender ? $profile->gender : $request->gender;
+            $profile->fcm_registration_id = $request->fcm_registration_id;
+            $profile->notification_on_like = $profile->notification_on_like ? $profile->notification_on_like : $request->notification_on_like;
+            $profile->notification_on_dislike = $profile->notification_on_dislike ? $profile->notification_on_dislike : $request->notification_on_dislike;
+            $profile->notification_on_comment = $profile->notification_on_comment ? $profile->notification_on_comment : $request->notification_on_comment;
         }
         $profile->save();
-        if($user->email === 'owhloapp@gmail.com') {
+        if ($user->email === 'owhloapp@gmail.com') {
             $profile->is_admin = 1;
             $profile->save();
         } else {
@@ -61,7 +61,7 @@ class UserProfileController extends Controller
     public function show(UserProfile $userProfile)
     {
         $user = Auth::user();
-	$profile = UserProfile::where('user_id', $user->id)->firstOrFail();
+        $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
 
         $countsQuery = [
             'posts as posts_count',
@@ -74,7 +74,7 @@ class UserProfileController extends Controller
             'activities as comment_count' => function ($query) {
                 $query->where('post_activities.type', config('constants.POST_ACTIVITY_COMMENT'));
             },
-	    'followers as is_following' => function ($query) use ($profile) {
+            'followers as is_following' => function ($query) use ($profile) {
                 $query->where('followables.user_profile_id', $profile->id);
             },
             'following as following_count',
@@ -86,16 +86,16 @@ class UserProfileController extends Controller
 
     public function follow(UserProfile $userProfile)
     {
-	$success = 0; // no action
+        $success = 0; // no action
         $user = Auth::user();
         $currentProfile = UserProfile::where('user_id', $user->id)->first();
-	if($currentProfile->isFollowing($userProfile)) {
-		$currentProfile->unfollow($userProfile);
-		$success = 1; // unfollow
-	} else {
-	        $currentProfile->follow($userProfile);
-		$success = 2; // follow
-	}
+        if ($currentProfile->isFollowing($userProfile)) {
+            $currentProfile->unfollow($userProfile);
+            $success = 1; // unfollow
+        } else {
+            $currentProfile->follow($userProfile);
+            $success = 2; // follow
+        }
         return response()->json(array("success" => $success));
     }
 

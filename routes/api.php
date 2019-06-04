@@ -31,6 +31,8 @@ Route::group(['as' => 'api.', 'namespace' => 'Api', 'middleware' => 'auth:fireba
     Route::post('posts/{post}/dislike', 'PostController@dislike')->name('post.dislike');
     Route::post('posts/{post}/share', 'PostController@share')->name('post.share');
     Route::get('posts/{post}/report', 'PostController@report')->name('post.report');
+    Route::get('stories/users', 'PostController@storyUsers')->name('post.stories.users');
+    Route::get('stories/users/{userProfile}', 'PostController@stories')->name('post.stories');
 
     Route::get('posts/{post}/comments', 'CommentController@index')->name('comment.index');
     Route::post('posts/{post}/comments', 'CommentController@store')->name('comment.create');

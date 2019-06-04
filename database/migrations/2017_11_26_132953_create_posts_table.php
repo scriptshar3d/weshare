@@ -23,6 +23,7 @@ class CreatePostsTable extends Migration
             $table->integer('share_count')->default(0);
             $table->string('video_thumbnail_url')->nullable();
             $table->string('text_location_on_video')->nullable();
+            $table->boolean('is_story')->default(false);
             $table->softDeletes();
             $table->timestamps();
 
