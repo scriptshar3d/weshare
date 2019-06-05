@@ -39,5 +39,5 @@ Route::group(['as' => 'api.', 'namespace' => 'Api', 'middleware' => 'auth:fireba
     Route::post('comments/{comment}/like', 'CommentController@like')->name('comment.like');
     Route::post('comments/{comment}/dislike', 'CommentController@dislike')->name('comment.dislike');
 
-    Route::get('activities', 'UserProfileController@activities')->name('activities.index');
+    Route::get('activities', 'PostActivityController@index')->name('activities.index');
 });
