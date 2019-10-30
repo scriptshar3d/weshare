@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use League\OAuth1\Client\Server\User;
 use App\Http\Controllers\Controller;
+use App\Models\ReportUser;
 
 class UserProfileController extends Controller
 {
@@ -170,5 +171,23 @@ class UserProfileController extends Controller
         $search = $request->search;
         $profiles = UserProfile::where('name', 'like', '%' . $search . '%')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
         return response()->json($profiles);
+    }
+
+    public function report(UserProfile $reportUser, Request $request)
+    {
+        $user = Auth::user();
+        $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
+
+        $request->validate([
+            'message' => 'required|string'
+        ]);
+
+        $report = ReportUser::create([
+            'message' => $request->message,
+            'user_profile_id' => $reportUser->id,
+            'reported_by' => $profile->id
+        ]);
+
+        return response()->json($report->refresh());
     }
 }

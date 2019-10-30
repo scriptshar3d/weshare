@@ -27,7 +27,11 @@
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "5.5.*",
-        "overtrue/laravel-follow": "^1.1"
+        "overtrue/laravel-follow": "^1.1",
+        "spatie/laravel-cors": "^1.6",
+        "laravel/passport": "^4.0",
+        "berkayk/onesignal-laravel": "^1.0",
+        "brotzka/laravel-dotenv-editor": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

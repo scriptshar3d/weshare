@@ -17,8 +17,8 @@ class CreateLaravelFollowTables extends Migration
             $table->unsignedInteger('followable_id');
             $table->string('followable_type')->index();
             $table->string('relation')->default('follow')->comment('folllow/like/subscribe/favorite/');
-	    $table->timestamps();
-	    $table->softDeletes();
+            $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('user_profile_id')
                 ->references(config('follow.users_table_primary_key', 'id'))
@@ -36,7 +36,7 @@ class CreateLaravelFollowTables extends Migration
     public function down()
     {
         Schema::table(config('follow.followable_table', 'followables'), function ($table) {
-            $table->dropForeign(config('follow.followable_table', 'followables').'_user_id_foreign');
+            $table->dropForeign(config('follow.followable_table', 'followables') . '_user_id_foreign');
         });
 
         Schema::drop(config('follow.followable_table', 'followables'));

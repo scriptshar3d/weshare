@@ -15,6 +15,7 @@ class CreateReportPost extends Migration
     {
         Schema::create('report_posts', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('message');
             $table->integer('user_profile_id')->unsigned();
             $table->integer('post_id')->unsigned();
             $table->softDeletes();
@@ -32,6 +33,6 @@ class CreateReportPost extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('report_posts');
     }
 }

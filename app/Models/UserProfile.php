@@ -11,10 +11,15 @@ class UserProfile extends Model
 {
     use Sortable, CanFollow, CanBeFollowed;
 
+    protected $fillable = [
+        'user_id', 'name', 'image', 'gender', 'fcm_registration_id', 'notification_on_like',
+        'notification_on_dislike', 'notification_on_comment', 'is_admin', 'is_blocked'
+    ];
+
     protected $casts = [
         'notification_on_like' => 'boolean',
-	    'notification_on_dislike' => 'boolean',
-	    'notification_on_comment' => 'boolean'
+        'notification_on_dislike' => 'boolean',
+        'notification_on_comment' => 'boolean'
     ];
     public function activities()
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ujjwal
@@ -9,12 +10,7 @@
 namespace App\Helpers;
 
 
-use App\Models\CommentActivity;
-use App\Models\PostActivity;
-use LaravelFCM\Facades\FCM;
-use LaravelFCM\Message\OptionsBuilder;
-use LaravelFCM\Message\PayloadDataBuilder;
-use LaravelFCM\Message\PayloadNotificationBuilder;
+use OneSignal;
 
 class PushNotificationHelper
 {
@@ -23,20 +19,27 @@ class PushNotificationHelper
         $data['title'] = $title;
         $data['body'] = $body;
 
-        $optionBuilder = new OptionsBuilder();
-        $optionBuilder->setTimeToLive(60*20);
+        OneSignal::sendNotificationToUser(
+            $title,
+            $token,
+            null,
+            $data
+        );
 
-        $notificationBuilder = new PayloadNotificationBuilder($title);
-        $notificationBuilder->setBody($body)
-            ->setSound('default');
+        // $optionBuilder = new OptionsBuilder();
+        // $optionBuilder->setTimeToLive(60*20);
 
-        $dataBuilder = new PayloadDataBuilder();
-        $dataBuilder->addData($data);
+        // $notificationBuilder = new PayloadNotificationBuilder($title);
+        // $notificationBuilder->setBody($body)
+        //     ->setSound('default');
 
-        $option = $optionBuilder->build();
-        $notification = $notificationBuilder->build();
-        $data = $dataBuilder->build();
+        // $dataBuilder = new PayloadDataBuilder();
+        // $dataBuilder->addData($data);
 
-        FCM::sendTo($token, $option, null, $data);
+        // $option = $optionBuilder->build();
+        // $notification = $notificationBuilder->build();
+        // $data = $dataBuilder->build();
+
+        // FCM::sendTo($token, $option, null, $data);
     }
 }

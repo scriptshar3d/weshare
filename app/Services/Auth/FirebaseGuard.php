@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ujjwal
@@ -40,25 +41,29 @@ class FirebaseGuard implements Guard
      */
     public function check()
     {
+        if (env('USE_DEMO_USER')) {
+            $this->setUser(new FirebaseUser('Test User', 'ABZ-TU', 'testuser@example.com', ''));
+            return true;
+        }
         $publicKeyURL = 'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com';
         $kids = json_decode(file_get_contents($publicKeyURL), true);
 
         $parser = new AuthHeaders();
         $token = $parser->parse($this->request);
-        if($token) {
+        if ($token) {
             try {
                 $decoded = JWT::decode($token, $kids, array('RS256'));
 
-                if($decoded->iss !== config('firebase.iss')) {
+                if ($decoded->iss !== config('firebase.iss')) {
                     throw new \Exception;
                 }
-		        $name = property_exists($decoded, 'name') ? $decoded->name : '';
-		        $email = property_exists($decoded, 'email') ? $decoded->email : '';
-		        $image = property_exists($decoded, 'picture') ? $decoded->picture : '';
+                $name = property_exists($decoded, 'name') ? $decoded->name : '';
+                $email = property_exists($decoded, 'email') ? $decoded->email : '';
+                $image = property_exists($decoded, 'picture') ? $decoded->picture : '';
                 $firebaseUser = new FirebaseUser($name, $decoded->user_id, $email, $image);
                 $this->setUser($firebaseUser);
                 return true;
-            } catch(\Exception $ex) {
+            } catch (\Exception $ex) {
                 throw new BadRequestHttpException('token_invalid');
             }
         }
