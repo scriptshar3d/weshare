@@ -13,6 +13,7 @@ namespace App\Services\Auth;
 use App\Extensions\FirebaseUserProxyProvider;
 use App\Http\Parsers\AuthHeaders;
 use App\Models\Auth\User\FirebaseUser;
+use App\Models\UserProfile;
 use Firebase\JWT\JWT;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
@@ -60,9 +61,21 @@ class FirebaseGuard implements Guard
                 $name = property_exists($decoded, 'name') ? $decoded->name : '';
                 $email = property_exists($decoded, 'email') ? $decoded->email : '';
                 $image = property_exists($decoded, 'picture') ? $decoded->picture : '';
+
+                // fetch user associated with given firebase user in our database,
+                // check if the user is blocked or not, if blocked return 417 error code
+                $profile = UserProfile::where('user_id', $decoded->user_id)->first();
+                if ($profile && $profile->is_blocked) {
+                    // handle blocked user, this exception will be catched by HttpException below
+                    abort(417);
+                }
+
                 $firebaseUser = new FirebaseUser($name, $decoded->user_id, $email, $image);
                 $this->setUser($firebaseUser);
                 return true;
+            } catch (HttpException $ex) {
+                // handle blocked user
+                abort(417);
             } catch (\Exception $ex) {
                 throw new BadRequestHttpException('token_invalid');
             }
