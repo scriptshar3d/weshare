@@ -13,7 +13,8 @@ class UserProfile extends Model
 
     protected $fillable = [
         'user_id', 'name', 'image', 'gender', 'fcm_registration_id', 'notification_on_like',
-        'notification_on_dislike', 'notification_on_comment', 'is_admin', 'is_blocked'
+        'notification_on_dislike', 'notification_on_comment', 'is_admin', 'is_blocked',
+        'is_private'
     ];
 
     protected $casts = [

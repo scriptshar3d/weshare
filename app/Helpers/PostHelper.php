@@ -84,7 +84,7 @@ class PostHelper
                 $data = ["comment_id" => $commentId];
                 break;
             case config('constants.POST_ACTIVITY_DISLIKE'):
-                $title = $profile->name . " liked your comment";
+                $title = $profile->name . " disliked your comment";
                 $body = $profile->name . " disliked your comment";
                 $data = ["comment_id" => $commentId];
                 break;

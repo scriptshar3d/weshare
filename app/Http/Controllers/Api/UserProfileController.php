@@ -6,9 +6,8 @@ use App\Http\Requests\UserProfileRequest;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use League\OAuth1\Client\Server\User;
 use App\Http\Controllers\Controller;
+use App\Models\FollowRequest;
 use App\Models\ReportUser;
 
 class UserProfileController extends Controller
@@ -30,6 +29,7 @@ class UserProfileController extends Controller
             $profile->notification_on_like = $request->notification_on_like;
             $profile->notification_on_dislike = $request->notification_on_dislike;
             $profile->notification_on_comment = $request->notification_on_comment;
+            $profile->is_private = $request->is_private;
         } else {
             $profile->name = $profile->name ? $profile->name : $user->name;
             $profile->image = $profile->image ? $profile->image : $user->image;
@@ -38,6 +38,7 @@ class UserProfileController extends Controller
             $profile->notification_on_like = $profile->notification_on_like ? $profile->notification_on_like : $request->notification_on_like;
             $profile->notification_on_dislike = $profile->notification_on_dislike ? $profile->notification_on_dislike : $request->notification_on_dislike;
             $profile->notification_on_comment = $profile->notification_on_comment ? $profile->notification_on_comment : $request->notification_on_comment;
+            $profile->is_private = $profile->is_private ? $profile->is_private : $request->is_private;
         }
         $profile->save();
         /*if ($user->email === 'owhloapp@gmail.com') {
@@ -189,5 +190,61 @@ class UserProfileController extends Controller
         ]);
 
         return response()->json($report->refresh());
+    }
+
+    public function followRequest(UserProfile $userprofile, Request $request)
+    {
+        $user = Auth::user();
+        $requestedByProfile = UserProfile::where('user_id', $user->id)->firstOrFail();
+        $follow = true;
+
+        $existingRequest = FollowRequest::where('user_profile_id', $userprofile->id)
+            ->where('requested_by_profile_id', $requestedByProfile->id)->first();
+
+        // toggle between follow request, if request is already there delete it,
+        // if request does not exist then create a request
+        if ($existingRequest) {
+            $existingRequest->delete();
+            $follow = false;
+        } else {
+            FollowRequest::create([
+                'user_profile_id' => $userprofile->id,
+                'requested_by_profile_id' => $requestedByProfile->id
+            ]);
+            $follow = true;
+        }
+
+        return response()->json(["follow" => $follow]);
+    }
+
+    public function followRequests()
+    {
+        $user = Auth::user();
+        $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
+
+        return response()->json(FollowRequest::where('user_profile_id', $profile->id)->get());
+    }
+
+    public function reviewFollowRequest(FollowRequest $followrequest, Request $request)
+    {
+        $request->validate(
+            [
+                'accept' => 'required|boolean'
+            ]
+        );
+        $follow = 0;
+
+        $requestedBy = $followrequest->requested_by->id;
+        $profileToFollow = $followrequest->profile->id;
+
+        if ($request->accept) {
+            $requestedBy->follow($profileToFollow);
+            $follow = 1;
+        }
+
+        // delete follow request eventually
+        $followrequest->delete();
+
+        return response()->json(["follow" => $follow]);
     }
 }

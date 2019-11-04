@@ -66,6 +66,12 @@ Route::group(['as' => 'api.', 'namespace' => 'Api'], function () {
         Route::post('profile/search', 'UserProfileController@search')->name('profile.search');
         Route::post('profile/follow/{userProfile}', 'UserProfileController@follow')->name('profile.follow');
 
+        // follow requests related APIs
+        Route::get('profile/follow-requests', 'UserProfileController@followRequests')->name('profile.followRequests');
+        Route::get('profile/follow-requests/follow/{userprofile}', 'UserProfileController@followRequest')->name('profile.followRequest');
+        Route::post('profile/follow-requests/{followrequest}/review', 'UserProfileController@reviewFollowRequest')->name('profile.reviewFollowRequest');
+
+
         Route::post('/report/{reportUser}', 'UserProfileController@report')->name('profile.report');
 
         Route::get('categories', 'CategoryController@index')->name('category.index');
@@ -86,6 +92,6 @@ Route::group(['as' => 'api.', 'namespace' => 'Api'], function () {
         Route::post('comments/{comment}/like', 'CommentController@like')->name('comment.like');
         Route::post('comments/{comment}/dislike', 'CommentController@dislike')->name('comment.dislike');
 
-        Route::get('activities', 'PostActivityController@index')->name('activities.index');
+        Route::get('activities', 'PostActivityController@index')->name('activities.index');        
     });
 });

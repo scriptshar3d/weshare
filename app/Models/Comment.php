@@ -13,7 +13,7 @@ class Comment extends Model
 
     public function getUserProfileIdAttribute($value)
     {
-        return UserProfile::select(['id', 'name','gender'])->find($value);
+        return UserProfile::select(['id', 'name','gender', "image"])->find($value);
     }
 
     public function comment_activities()
