@@ -51,9 +51,12 @@ class PostController extends Controller
         if ($request->type) {
             $posts = $posts->where('type', $request->type);
         }
-        if ($request->user_profile_id) {
+        if ($request->user_profile_id && $request->user_profile_id != -1) {
             $posts = $posts->where('user_profile_id', $request->user_profile_id);
         }
+
+        $posts = $posts->where('is_story', false);
+
         $posts = $posts->orderBy('created_at', 'desc')->withCount($countsQuery)->paginate(config('constants.paginate_per_page'));
         return response()->json($posts);
     }
