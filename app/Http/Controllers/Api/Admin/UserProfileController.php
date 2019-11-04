@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Models\ReportUser;
+use OneSignal;
 
 class UserProfileController extends Controller
 {
