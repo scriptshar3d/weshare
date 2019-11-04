@@ -42,8 +42,12 @@ class PostController extends Controller
                     ->where('type', config('constants.POST_ACTIVITY_COMMENT'));
             }
         ];
-        $following = array_merge($profile->followings()->pluck('id')->all(), [$profile->id]);
-        $posts = Post::whereIn('user_profile_id', $following);
+        if ($request->treding === "1") {
+            $posts = Post::whereRaw("1=1");
+        } else {
+            $following = array_merge($profile->followings()->pluck('id')->all(), [$profile->id]);
+            $posts = Post::whereIn('user_profile_id', $following);            
+        }
         if ($request->type) {
             $posts = $posts->where('type', $request->type);
         }
