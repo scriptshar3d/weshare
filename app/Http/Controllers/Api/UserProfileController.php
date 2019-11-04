@@ -40,13 +40,13 @@ class UserProfileController extends Controller
             $profile->notification_on_comment = $profile->notification_on_comment ? $profile->notification_on_comment : $request->notification_on_comment;
         }
         $profile->save();
-        if ($user->email === 'owhloapp@gmail.com') {
+        /*if ($user->email === 'owhloapp@gmail.com') {
             $profile->is_admin = 1;
             $profile->save();
         } else {
             $adminProfile = UserProfile::where('is_admin', 1)->first();
             $profile->follow($adminProfile);
-        }
+        }*/
 
         $countsQuery = [
             'followers as is_following' => function ($query) use ($profile) {
