@@ -91,12 +91,15 @@ class UserProfileController extends Controller
         $success = 0; // no action
         $user = Auth::user();
         $currentProfile = UserProfile::where('user_id', $user->id)->first();
-        if ($currentProfile->isFollowing($userProfile)) {
-            $currentProfile->unfollow($userProfile);
-            $success = 1; // unfollow
-        } else {
-            $currentProfile->follow($userProfile);
-            $success = 2; // follow
+
+        if (!$userProfile->is_private) {
+            if ($currentProfile->isFollowing($userProfile)) {
+                $currentProfile->unfollow($userProfile);
+                $success = 1; // unfollow
+            } else {
+                $currentProfile->follow($userProfile);
+                $success = 2; // follow
+            }
         }
         return response()->json(array("success" => $success));
     }
@@ -196,7 +199,7 @@ class UserProfileController extends Controller
     {
         $user = Auth::user();
         $requestedByProfile = UserProfile::where('user_id', $user->id)->firstOrFail();
-        $follow = true;
+        $follow = false;
 
         $existingRequest = FollowRequest::where('user_profile_id', $userprofile->id)
             ->where('requested_by_profile_id', $requestedByProfile->id)->first();
@@ -214,7 +217,7 @@ class UserProfileController extends Controller
             $follow = true;
         }
 
-        return response()->json(["follow" => $follow]);
+        return response()->json(["follow_request" => $follow]);
     }
 
     public function followRequests()
