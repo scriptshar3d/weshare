@@ -43,7 +43,7 @@ class PostController extends Controller
             }
         ];
         if ($request->treding === "1") {
-            $posts = Post::where('user', function($query) {
+            $posts = Post::whereHas('user', function($query) {
                 $query->where('is_private', false);
             });
         } else {
