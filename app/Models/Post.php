@@ -17,4 +17,9 @@ class Post extends Model
     {
         return $this->hasMany('App\Models\PostActivity');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\UserProfile', 'user_profile_id'); 
+    }
 }

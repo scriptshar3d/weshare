@@ -43,7 +43,9 @@ class PostController extends Controller
             }
         ];
         if ($request->treding === "1") {
-            $posts = Post::whereRaw("1=1");
+            $posts = Post::where('user', function($query) {
+                $query->where('is_private', false);
+            });
         } else {
             $following = array_merge($profile->followings()->pluck('id')->all(), [$profile->id]);
             $posts = Post::whereIn('user_profile_id', $following);            
