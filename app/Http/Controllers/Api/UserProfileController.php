@@ -93,15 +93,16 @@ class UserProfileController extends Controller
         $user = Auth::user();
         $currentProfile = UserProfile::where('user_id', $user->id)->first();
 
-        if (!$userProfile->is_private) {
-            if ($currentProfile->isFollowing($userProfile)) {
-                $currentProfile->unfollow($userProfile);
-                $success = 1; // unfollow
-            } else {
+        if ($currentProfile->isFollowing($userProfile)) {
+            $currentProfile->unfollow($userProfile);
+            $success = 1; // unfollow
+        } else {
+            if (!$userProfile->is_private) {
                 $currentProfile->follow($userProfile);
                 $success = 2; // follow
             }
         }
+
         return response()->json(array("success" => $success));
     }
 
