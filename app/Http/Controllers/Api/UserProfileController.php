@@ -215,6 +215,12 @@ class UserProfileController extends Controller
                 'requested_by_profile_id' => $requestedByProfile->id
             ]);
             $follow = true;
+
+            // send notification to user
+            $title = "New request to follow you";
+            $body = $requestedByProfile->name . " requested to follow you";
+            $data = ["profile_id" => $requestedByProfile->id];
+            PushNotificationHelper::send($userprofile->fcm_registration_id, $title, $body, $data);
         }
 
         return response()->json(["follow_request" => $follow]);
@@ -243,6 +249,12 @@ class UserProfileController extends Controller
         if ($request->accept) {
             $requestedBy->follow($profileToFollow);
             $follow = 1;
+
+            // send notification to user
+            $title = "Follow request accepted";
+            $body = $profileToFollow->name . " accepted your follow request";
+            $data = ["profile_id" => $profileToFollow->id];
+            PushNotificationHelper::send($requestedBy->fcm_registration_id, $title, $body, $data);
         }
 
         // delete follow request eventually
