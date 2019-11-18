@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\UserProfileRequest;
+use App\Models\ReportUser;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 use App\Models\FollowRequest;
-use App\Models\ReportUser;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Helpers\PushNotificationHelper;
+use App\Http\Requests\UserProfileRequest;
 
 class UserProfileController extends Controller
 {
