@@ -254,8 +254,8 @@ class UserProfileController extends Controller
         );
         $follow = 0;
 
-        $requestedBy = $followrequest->requested_by->id;
-        $profileToFollow = $followrequest->profile->id;
+        $requestedBy = UserProfile::find($followrequest->requested_by->id);
+        $profileToFollow = UserProfile::find($followrequest->profile->id);
 
         if ($request->accept) {
             $requestedBy->follow($profileToFollow);
