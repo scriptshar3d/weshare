@@ -55,7 +55,10 @@ class UserProfileController extends Controller
                 $query->where('followables.user_profile_id', $profile->id);
             },
             'following as following_count',
-            'followers as followers_count'
+            'followers as followers_count',
+            'followrequests as is_follow_requested' => function ($query) use ($profile) {
+                $query->where('followrequests.user_profile_id', $profile->id);
+            },
         ];
         return response()->json(UserProfile::where('id', $profile->id)->withCount($countsQuery)->firstOrFail());
     }
@@ -79,6 +82,9 @@ class UserProfileController extends Controller
             },
             'followers as is_following' => function ($query) use ($profile) {
                 $query->where('followables.user_profile_id', $profile->id);
+            },
+            'followrequests as is_follow_requested' => function ($query) use ($profile) {
+                $query->where('followrequests.user_profile_id', $profile->id);
             },
             'following as following_count',
             'followers as followers_count'
@@ -169,6 +175,9 @@ class UserProfileController extends Controller
         $countsQuery = [
             'followers as is_following' => function ($query) use ($profile) {
                 $query->where('followables.user_profile_id', $profile->id);
+            },
+            'followrequests as is_follow_requested' => function ($query) use ($profile) {
+                $query->where('followrequests.user_profile_id', $profile->id);
             },
             'following as following_count',
             'followers as followers_count'
