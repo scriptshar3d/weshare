@@ -60,7 +60,6 @@ Route::group(['as' => 'api.', 'namespace' => 'Api'], function () {
 
     Route::middleware('auth:firebase')->group(function () {
         Route::post('profile', 'UserProfileController@store')->name('profile.create');
-        Route::get('profile/{userProfile}', 'UserProfileController@show')->name('profile.show');
         Route::get('profile/followers/{userProfile}', 'UserProfileController@followers')->name('profile.followers');
         Route::get('profile/following/{userProfile}', 'UserProfileController@following')->name('profile.following');
         Route::post('profile/search', 'UserProfileController@search')->name('profile.search');
@@ -70,6 +69,7 @@ Route::group(['as' => 'api.', 'namespace' => 'Api'], function () {
         Route::get('profile/follow-requests', 'UserProfileController@followRequests')->name('profile.followRequests');
         Route::get('profile/follow-requests/follow/{userprofile}', 'UserProfileController@followRequest')->name('profile.followRequest');
         Route::post('profile/follow-requests/{followrequest}/review', 'UserProfileController@reviewFollowRequest')->name('profile.reviewFollowRequest');
+	Route::get('profile/{userProfile}', 'UserProfileController@show')->name('profile.show');
 
 
         Route::post('/report/{reportUser}', 'UserProfileController@report')->name('profile.report');
