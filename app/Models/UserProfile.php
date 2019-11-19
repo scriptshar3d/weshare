@@ -41,4 +41,9 @@ class UserProfile extends Model
     {
         return $this->hasMany('Overtrue\LaravelFollow\FollowRelation', 'user_profile_id');
     }
+
+    public function followrequests()
+    {
+        return $this->hasMany('App\Models\FollowRequest', 'user_profile_id');
+    }
 }
