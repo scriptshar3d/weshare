@@ -149,7 +149,7 @@ class PostController extends Controller
     public function stories(UserProfile $userProfile)
     {
         $posts = Post::where('user_profile_id', $userProfile->id)->where('is_story', true)
-            ->where('created_at', '>', Carbon::now->subHours(24))
+            ->where('created_at', '>', Carbon::now()->subHours(24))
             ->orderBy('created_at', 'desc')->get();
         return response()->json($posts);
     }
