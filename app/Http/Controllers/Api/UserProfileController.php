@@ -70,7 +70,9 @@ class UserProfileController extends Controller
         $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
 
         $countsQuery = [
-            'posts as posts_count',
+            'posts as posts_count' => function ($query) {
+                $query->where('posts.is_story', false);
+            },
             'activities as like_count' => function ($query) {
                 $query->where('post_activities.type', config('constants.POST_ACTIVITY_LIKE'));
             },
