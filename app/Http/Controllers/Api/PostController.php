@@ -47,17 +47,15 @@ class PostController extends Controller
                 $query->where('is_private', false);
             });
         } else if ($request->user_profile_id && $request->user_profile_id != -1) {
-            $posts = $posts->where('user_profile_id', $request->user_profile_id);
+            $posts = Post::where('user_profile_id', $request->user_profile_id);
         } else {
             $following = $profile->followings()->pluck('id')->all();
             $posts = Post::whereIn('user_profile_id', $following);            
         }
+        
         if ($request->type) {
             $posts = $posts->where('type', $request->type);
-        }
-        if ($request->user_profile_id && $request->user_profile_id != -1) {
-            $posts = $posts->where('user_profile_id', $request->user_profile_id);
-        }
+        }        
 
         $posts = $posts->where('is_story', false);
 
