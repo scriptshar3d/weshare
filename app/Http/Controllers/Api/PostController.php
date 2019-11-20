@@ -46,6 +46,8 @@ class PostController extends Controller
             $posts = Post::whereHas('user', function($query) {
                 $query->where('is_private', false);
             });
+        } else if ($request->user_profile_id && $request->user_profile_id != -1) {
+            $posts = $posts->where('user_profile_id', $request->user_profile_id);
         } else {
             $following = $profile->followings()->pluck('id')->all();
             $posts = Post::whereIn('user_profile_id', $following);            
