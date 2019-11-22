@@ -42,6 +42,7 @@ Route::group(['as' => 'api.', 'namespace' => 'Api'], function () {
             Route::apiResource('comments', 'CommentController')->except(['create', 'update']);
 
             // post
+            Route::get('/profiles/reported-posts', 'UserProfileController@reportedPosts');
             Route::apiResource('posts', 'PostController')->except(['create', 'update']);
 
             // settings

@@ -84,7 +84,7 @@ class UserProfileController extends Controller
     {
         $reportedUsers = ReportUser::whereRaw("1=1");
 
-        return response()->json($reportedUsers->orderBy('created_at', 'asc')->paginate(config('constants.paginate_per_page')));
+        return response()->json($reportedUsers->orderBy('created_at', 'desc')->paginate(config('constants.paginate_per_page')));
     }
 
     public function block(UserProfile $profile)

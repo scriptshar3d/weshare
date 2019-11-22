@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\ReportPost;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -25,5 +26,12 @@ class PostController extends Controller
         $post->forceDelete();
 
         return response()->json([], 204);
+    }
+
+    public function reportedPosts(Request $request)
+    {
+        $reportedPosts = ReportPost::whereRaw("1=1");
+
+        return response()->json($reportedPosts->orderBy('created_at', 'desc')->paginate(config('constants.paginate_per_page')));
     }
 }
