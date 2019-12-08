@@ -8,8 +8,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @group PostActivity
+ */
 class PostActivityController extends Controller
 {
+    /**
+     * Activities on posts posted by user
+     * @authenticated
+     */
     public function index()
     {
         $user = Auth::user();

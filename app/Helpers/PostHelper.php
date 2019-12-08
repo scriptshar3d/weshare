@@ -10,6 +10,7 @@ namespace App\Helpers;
 
 use App\Models\Post;
 use App\Models\UserProfile;
+use App\Models\Comment;
 use App\Models\CommentActivity;
 use App\Models\PostActivity;
 

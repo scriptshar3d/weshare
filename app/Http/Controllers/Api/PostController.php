@@ -11,9 +11,21 @@ use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
+/**
+ * @group Post
+ * @authenticated
+ */
 class PostController extends Controller
 {
+    /**
+     * List of posts
+     * @authenticated
+     * @queryParam treding optional Show trending posts. Example: 0
+     * @queryParam user_profile_id string Show posts of a users. Example: -1
+     * @queryParam type string Filter posts on the basis of type. Example: text
+     */
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -63,6 +75,10 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
+    /**
+     * Get a post by id
+     * @authenticated
+     */
     public function show(Post $post)
     {
         $user = Auth::user();
@@ -94,6 +110,10 @@ class PostController extends Controller
         return response()->json(Post::where('id', $post->id)->withCount($countsQuery)->first());
     }
 
+    /**
+     * List of posts posted by current user
+     * @authenticated
+     */
     public function myposts(Request $request)
     {
         $user = Auth::user();
@@ -133,6 +153,11 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
+
+    /**
+     * List of users who have posted stories
+     * @authenticated
+     */
     public function storyUsers()
     {
         $user = Auth::user();
@@ -146,6 +171,10 @@ class PostController extends Controller
         return response()->json(UserProfile::whereIn('id', $userIds)->get());
     }
 
+    /**
+     * List of stories by a user
+     * @authenticated
+     */
     public function stories(UserProfile $userProfile)
     {
         $posts = Post::where('user_profile_id', $userProfile->id)->where('is_story', true)
@@ -154,12 +183,20 @@ class PostController extends Controller
         return response()->json($posts);
     }
 
+    /**
+     * Like a post
+     * @authenticated
+     */
     public function like(Post $post)
     {
         $status = $this->likeDislikePost($post, config('constants.POST_ACTIVITY_LIKE'));
         return response()->json(array("id" => $post->id, "status" => $status), 200);
     }
 
+    /**
+     * Dislike a post
+     * @authenticated
+     */
     public function dislike(Post $post)
     {
         $status = $this->likeDislikePost($post, config('constants.POST_ACTIVITY_DISLIKE'));
@@ -167,6 +204,11 @@ class PostController extends Controller
         return response()->json(array("id" => $post->id, "status" => $status), 200);
     }
 
+    /**
+     * Share a post
+     * Share a post, this will increase share count, actually sharing is being handled at client side
+     * @authenticated
+     */
     public function share(Post $post)
     {
         $post->share_count = $post->share_count + 1;
@@ -174,6 +216,15 @@ class PostController extends Controller
         return response()->json(null, 200);
     }
 
+    /**
+     * Create a new post
+     * @authenticated
+     * @bodyParam title string optional Title of the post
+     * @bodyParam text string optional Text(body) of the post, required if parameter media_url is not set
+     * @bodyParam media_url string optional  Media for the post, required if parameter text is not set
+     * @bodyParam type string required  Type of the post. Possible values: text, image, video, audio, gif
+     * @bodyParam is_story boolean optional  If post is a story. Default value is false
+     */
     public function store(CreatePostRequest $request)
     {
         $user = Auth::user();
@@ -191,6 +242,10 @@ class PostController extends Controller
         return response()->json(Post::find($post->id));
     }
 
+    /**
+     * Delete a post
+     * @authenticated
+     */
     public function destroy(Post $post)
     {
         $deleted = $post->delete();
@@ -198,11 +253,22 @@ class PostController extends Controller
         return response()->json(null, $status);
     }
 
-    public function report(Post $post)
+    /**
+     * Report a post
+     * @authenticated
+     */
+    public function report(Post $post, Request $request)
     {
+        $request->validate([
+            'message' => 'sometimes|string'
+        ]);
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->first();
+
+        $reportMessage = !empty($request->message) ? $request->message : 'Spam';
+
         $report = new ReportPost();
+        $report->message = $reportMessage;
         $report->post_id = $post->id;
         $report->user_profile_id = $profile->id;
         $report->save();

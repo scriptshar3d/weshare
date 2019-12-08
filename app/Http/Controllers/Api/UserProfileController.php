@@ -11,8 +11,24 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\PushNotificationHelper;
 use App\Http\Requests\UserProfileRequest;
 
+/**
+ * @group UserProfile
+ */
 class UserProfileController extends Controller
 {
+    /**
+     * Create or update profile
+     * @authenticated
+     * @bodyParam update string required Update or create profile. Send 1 for update and 0 for create
+     * @bodyParam name string optional Name of the user, if not given will retrieved from firebase token
+     * @bodyParam image string optional Image of the user, if not given will retrieved from firebase token
+     * @bodyParam gender string required  Gender of user. Example: m or f
+     * @bodyParam fcm_registration_id string required One signal id
+     * @bodyParam notification_on_like string required Send notification or not when post is liked
+     * @bodyParam notification_on_dislike string required Send notification or not when post is disliked
+     * @bodyParam notification_on_comment string required Send notification or not on new comment
+     * @bodyParam is_private boolean required Profile is provate or not
+     */
     public function store(UserProfileRequest $request)
     {
         $user = Auth::user();
@@ -63,7 +79,9 @@ class UserProfileController extends Controller
         return response()->json(UserProfile::where('id', $profile->id)->withCount($countsQuery)->firstOrFail());
     }
 
-
+    /**
+     * Show user profile
+     */
     public function show(UserProfile $userProfile)
     {
         $user = Auth::user();
@@ -95,6 +113,10 @@ class UserProfileController extends Controller
     }
 
 
+    /**
+     * Follow User
+     * Toogle follow state for user.
+     */
     public function follow(UserProfile $userProfile)
     {
         $success = 0; // no action
@@ -114,6 +136,9 @@ class UserProfileController extends Controller
         return response()->json(array("success" => $success));
     }
 
+    /**
+     * List of followers
+     */
     public function followers(UserProfile $userProfile)
     {
         $user = Auth::user();
@@ -138,6 +163,9 @@ class UserProfileController extends Controller
 
     }
 
+    /**
+     * List of users current user is following
+     */
     public function following(UserProfile $userProfile)
     {
         $user = Auth::user();
@@ -161,6 +189,10 @@ class UserProfileController extends Controller
         //return response()->json($userProfile->followings()->get());
     }
 
+    /**
+     * List of activities
+     * List of activities on posts of current user such as like, dislike, comment
+     */
     public function activities()
     {
         $user = Auth::user();
@@ -169,6 +201,9 @@ class UserProfileController extends Controller
         return response()->json($profile->activities()->orderBy('created_at', 'desc')->paginate(config('constants.paginate_per_page')));
     }
 
+    /**
+     * Search profiles
+     */
     public function search(Request $request)
     {
         $user = Auth::user();
@@ -190,6 +225,10 @@ class UserProfileController extends Controller
         return response()->json($profiles);
     }
 
+    /**
+     * Report a user
+     * @bodyParam message text required Reason for reporting
+     */
     public function report(UserProfile $reportUser, Request $request)
     {
         $user = Auth::user();
@@ -208,6 +247,9 @@ class UserProfileController extends Controller
         return response()->json($report->refresh());
     }
 
+    /**
+     * Send follow request to a private profile
+     */
     public function followRequest(UserProfile $userprofile, Request $request)
     {
         $user = Auth::user();
@@ -239,6 +281,9 @@ class UserProfileController extends Controller
         return response()->json(["follow_request" => $follow]);
     }
 
+    /**
+     * List of follow requests
+     */
     public function followRequests()
     {
         $user = Auth::user();
@@ -247,6 +292,10 @@ class UserProfileController extends Controller
         return response()->json(FollowRequest::where('user_profile_id', $profile->id)->get());
     }
 
+    /**
+     * Accept/Reject follow request
+     * @bodyParam accept boolean required Accept or not follow request
+     */
     public function reviewFollowRequest(FollowRequest $followrequest, Request $request)
     {
         $request->validate(

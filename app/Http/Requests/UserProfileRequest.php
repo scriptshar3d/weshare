@@ -31,7 +31,8 @@ class UserProfileRequest extends FormRequest
             'notification_on_like' => ['required'],
             'notification_on_dislike' => ['required'],
             'notification_on_comment' => ['required'],
-            'image' => ['string']
+            'image' => ['string'],
+            'is_private' => 'required|boolean'
         ];
     }
 }

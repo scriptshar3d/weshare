@@ -27,10 +27,10 @@ Route::group(['as' => 'api.', 'namespace' => 'Api'], function () {
 
             // user
             Route::apiResource('users', 'UserController')->except(['create', 'destroy']);
-            
+
             // user profile            
             Route::post('/profiles/notifications/{userprofile}', 'UserProfileController@sendPushNotification');
-            Route::post('/profiles/notifications', 'UserProfileController@sendPushNotificationToAll');            
+            Route::post('/profiles/notifications', 'UserProfileController@sendPushNotificationToAll');
             Route::get('/profiles/reported-users', 'UserProfileController@reportedUsers');
             Route::get('/profiles/block/{profile}', 'UserProfileController@block');
             Route::apiResource('profiles', 'UserProfileController')->except('create');
@@ -70,12 +70,12 @@ Route::group(['as' => 'api.', 'namespace' => 'Api'], function () {
         Route::get('profile/follow-requests', 'UserProfileController@followRequests')->name('profile.followRequests');
         Route::get('profile/follow-requests/follow/{userprofile}', 'UserProfileController@followRequest')->name('profile.followRequest');
         Route::post('profile/follow-requests/{followrequest}/review', 'UserProfileController@reviewFollowRequest')->name('profile.reviewFollowRequest');
-	Route::get('profile/{userProfile}', 'UserProfileController@show')->name('profile.show');
+        Route::get('profile/{userProfile}', 'UserProfileController@show')->name('profile.show');
 
 
         Route::post('/report/{reportUser}', 'UserProfileController@report')->name('profile.report');
 
-        Route::get('categories', 'CategoryController@index')->name('category.index');
+        //Route::get('categories', 'CategoryController@index')->name('category.index');
 
         Route::get('posts', 'PostController@index')->name('post.index');
         Route::post('posts', 'PostController@store')->name('post.create');
@@ -93,6 +93,6 @@ Route::group(['as' => 'api.', 'namespace' => 'Api'], function () {
         Route::post('comments/{comment}/like', 'CommentController@like')->name('comment.like');
         Route::post('comments/{comment}/dislike', 'CommentController@dislike')->name('comment.dislike');
 
-        Route::get('activities', 'PostActivityController@index')->name('activities.index');        
+        Route::get('activities', 'PostActivityController@index')->name('activities.index');
     });
 });

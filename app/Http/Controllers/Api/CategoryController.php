@@ -6,6 +6,9 @@ namespace App\Http\Controllers\Api;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
 
+/**
+ * @group Category
+ */
 class CategoryController extends Controller
 {
     public function index()

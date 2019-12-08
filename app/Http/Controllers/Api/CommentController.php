@@ -12,8 +12,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @group Comment
+ */
 class CommentController extends Controller
 {
+    /**
+     * List of comments on a post
+     * @authenticated
+     * @urlParam post required The ID of the post
+     */
     public function index($post) {
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
@@ -39,16 +47,32 @@ class CommentController extends Controller
         return response()->json($comments);
     }
 
+    /**
+     * Like a comment
+     * @authenticated
+     * @urlParam comment required The ID of the comment
+     */
     public function like(Comment $comment) {
         $status = $this->likeDislikeComment($comment, config('constants.COMMENT_ACTIVITY_LIKE'));
         return response()->json(array("id" => $comment->id, "status" => $status), 200);
     }
 
+    /**
+     * Dislike a comment
+     * @authenticated
+     * @urlParam comment required The ID of the comment
+     */
     public function dislike(Comment $comment) {
         $status = $this->likeDislikeComment($comment, config('constants.COMMENT_ACTIVITY_DISLIKE'));
         return response()->json(array("id" => $comment->id, "status" => $status), 200);
     }
 
+    /**
+     * Create a comment
+     * @authenticated
+     * @urlParam comment required The ID of the post
+     * @bodyParam text string required Comment text
+     */
     public function store(Post $post, CreateCommentRequest $request) {
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->first();
@@ -63,6 +87,11 @@ class CommentController extends Controller
         return response()->json(Comment::find($comment->id));
     }
 
+    /**
+     * Delete a comment
+     * @authenticated
+     * @urlParam comment required The ID of the comment     
+     */
     public function destroy(Comment $comment) {
         $deleted = $comment->delete();
         $status = $deleted ? 200 : 400;

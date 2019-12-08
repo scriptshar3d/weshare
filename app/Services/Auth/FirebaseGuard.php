@@ -43,7 +43,7 @@ class FirebaseGuard implements Guard
     public function check()
     {
         // Use dummy user for auth while in debug mode, make sure to disable this in production
-        if (env('APP_DEBUG') && env('USE_DEMO_USER') && isset($this->request->debugmode)) {
+        if (env('APP_DEBUG') && env('USE_DEMO_USER')) {
             $this->setUser(new FirebaseUser('Test User', 'ABZ-TU', 'testuser@example.com', ''));
             return true;
         }

@@ -19,12 +19,16 @@ class PushNotificationHelper
         $data['title'] = $title;
         $data['body'] = $body;
 
-        OneSignal::sendNotificationToUser(
-            $title,
-            $token,
-            null,
-            $data
-        );
+        try {
+            OneSignal::sendNotificationToUser(
+                $title,
+                $token,
+                null,
+                $data
+            );
+        } catch(\Exception $ex) {
+            //
+        }
 
         // $optionBuilder = new OptionsBuilder();
         // $optionBuilder->setTimeToLive(60*20);

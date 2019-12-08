@@ -8,6 +8,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Active Log
+ */
 class ActiveLogController extends Controller
 {
     public function store(Request $request)
