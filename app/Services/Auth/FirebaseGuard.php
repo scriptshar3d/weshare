@@ -20,6 +20,7 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\MockObject\BadMethodCallException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use UnexpectedValueException;
 
 class FirebaseGuard implements Guard
