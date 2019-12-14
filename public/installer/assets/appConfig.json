@@ -1,5 +1,5 @@
 {
-    "appName": "Weshare App",
-    "apiBaseUrl": "http://localhost/weshare/public/api/admin",
+    "appName": "APP_NAME",
+    "apiBaseUrl": "ADMIN_API_BASE_URL",
     "enableDelete": true
 }

@@ -51,8 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $admin_config_content = file_get_contents($admin_config_path);
   $admin_config_content = str_replace('APP_NAME', str_replace('"', "", $_POST['app_name']), $admin_config_content);
   $admin_config_content = str_replace('ADMIN_API_BASE_URL', $_POST['app_url'] . '/api/admin', $admin_config_content);
-  file_put_contents($admin_config_path, $admin_config_content);
-  copy($admin_config_path, "../admin/" . $admin_config_path);
+  file_put_contents("../admin/" . $admin_config_path, $admin_config_content);
 
   $show_summary = true;
 }
