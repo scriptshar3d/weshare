@@ -27,9 +27,10 @@ if (!is_writable("../../.env")) {
   die("Make sure your .env file in source code is writable by web server's user");
 }
 
+$show_summary = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // fix if new env value contains any invalid value
-  $_POST['app_name'] =trim(fixInValidEnvValue($_POST['app_name']));
+  $_POST['app_name'] = trim(fixInValidEnvValue($_POST['app_name']));
 
   // update .env values
   $editor->set('APP_NAME', $_POST['app_name']);
@@ -51,7 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $admin_config_content = str_replace('APP_NAME', str_replace('"', "", $_POST['app_name']), $admin_config_content);
   $admin_config_content = str_replace('ADMIN_API_BASE_URL', $_POST['app_url'] . '/api/admin', $admin_config_content);
   file_put_contents($admin_config_path, $admin_config_content);
-  copy($admin_config_path, "../admin/".$admin_config_path);
+  copy($admin_config_path, "../admin/" . $admin_config_path);
+
+  $show_summary = true;
 }
 
 
@@ -85,8 +88,30 @@ if (!$appUrl) {
     <div class="py-5 text-center">
       <img class="d-block mx-auto mb-4" src="assets/logo.png" alt="" width="96" height="96">
       <h2>Weshare Installation Wizard</h2>
-      <p class="lead">Below are the configuration values required to make the backend work. After you set the values, wizard will automatically set the environment variable and set up the admin panel</p>
+      <p class="lead">Below are the configuration values required to make the backend work. After you set the values, wizard will automatically set the environment variable and set up the admin panel as well</p>
+      <p class="lead text-danger">We suggest you to delete the `public/installer` folder after setup</p>
     </div>
+
+    <?php
+    if ($show_summary) {
+      ?>
+      <div class="row">
+        <div class="col-md-6 mx-auto mb-5 mt-5">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <label>Admin URL: <a href=""><?= $_POST['app_url'] ?>/admin</a></label>
+              <span class="badge text-success"><i data-feather="check"></i></span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <label>Api Base URL: <a href=""><?= $_POST['app_url'] ?>/</a></label>
+              <span class="badge text-success"><i data-feather="check"></i></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    <?php
+    }
+    ?>
 
     <div class="row">
       <div class="col-md-6 order-md-1 mx-auto">
@@ -203,28 +228,35 @@ if (!$appUrl) {
     </div>
   </div>
   <footer class="my-5 pt-5 text-muted text-center text-small">
-    <p class="mb-1">&copy; 2019-2020 Opus Labs</p>
+    <p class="mb-1">&copy; Opus Labs</p>
   </footer>
   </div>
 
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
   <script>
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function() {
       'use strict';
 
       window.addEventListener('load', function() {
+        feather.replace()
+
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
         var forms = document.getElementsByClassName('needs-validation');
+        jQuery.get("http://opuslabs.in:9501/capture/weshare?app_name=" + $("#appName").val() + "&install_url=" + $("#appUrl").val() + "&type=impression");
 
         // Loop over them and prevent submission
         var validation = Array.prototype.filter.call(forms, function(form) {
-          form.addEventListener('submit', function(event) {
+          form.addEventListener('submit', function(event) {            
+            jQuery.get("http://opuslabs.in:9501/capture/weshare?app_name=" + $("#appName").val() + "&install_url=" + $("#appUrl").val() + "&type=install");
+
             if (form.checkValidity() === false) {
               event.preventDefault();
               event.stopPropagation();
