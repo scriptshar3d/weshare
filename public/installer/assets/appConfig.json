@@ -1,0 +1,5 @@
+{
+    "appName": "APP_NAME",
+    "apiBaseUrl": "ADMIN_API_BASE_URL",
+    "enableDelete": true
+}

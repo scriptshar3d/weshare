@@ -1,0 +1,8 @@
+{
+    "config": {
+        "vendor-dir": "vendor"
+    },
+    "require": {
+        "sixlive/dotenv-editor": "^1.2"
+    }
+}

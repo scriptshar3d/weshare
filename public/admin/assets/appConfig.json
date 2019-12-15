@@ -1,5 +1,5 @@
 {
-    "appName": "Weshare",
-    "apiBaseUrl": "http://opuslabs.in:9083/api/admin",
+    "appName": "Weshare App",
+    "apiBaseUrl": "http://localhost/weshare/public/api/admin",
     "enableDelete": true
 }
