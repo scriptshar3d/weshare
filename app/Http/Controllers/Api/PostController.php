@@ -163,7 +163,7 @@ class PostController extends Controller
         $user = Auth::user();
         $profile = UserProfile::where('user_id', $user->id)->firstOrFail();
         $following = array_merge($profile->followings()->pluck('id')->all(), [$profile->id]);
-        $users = Post::whereIn('user_profile_id', $following)->where('is_story', true)->get()->pluck('user_profile_id')->all();
+        $users = Post::whereIn('user_profile_id', $following)->where('is_story', true)->where('created_at', '>', Carbon::now()->subHours(24))->get()->pluck('user_profile_id')->all();
         $userIds = [];
         foreach ($users as $user) {
             $userIds[] = $user->id;
