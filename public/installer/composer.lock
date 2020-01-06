@@ -1,0 +1,68 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "c6d2fa475ba8f01f146c369ec296ef87",
+    "packages": [
+        {
+            "name": "sixlive/dotenv-editor",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sixlive/dotenv-editor.git",
+                "reference": "258e4fea7068c84402211a900659cda2c631bc00"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sixlive/dotenv-editor/zipball/258e4fea7068c84402211a900659cda2c631bc00",
+                "reference": "258e4fea7068c84402211a900659cda2c631bc00",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1|^7.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.12",
+                "larapack/dd": "^1.0",
+                "phpunit/phpunit": "^7.0",
+                "sempro/phpunit-pretty-print": "^1.0.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "sixlive\\DotenvEditor\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "TJ Miller",
+                    "email": "oss@tjmiller.co",
+                    "homepage": "https://tjmiller.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A tool to edit phpdotenv files",
+            "homepage": "https://github.com/sixlive/dotenv-editor",
+            "keywords": [
+                "dotenv",
+                "dotenv-editor",
+                "phpdotenv"
+            ],
+            "time": "2019-01-31T13:02:04+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

@@ -1,0 +1,10 @@
+[2019-11-23 09:52:32] local.ERROR: There are no commands defined in the "apidoc" namespace. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): There are no commands defined in the \"apidoc\" namespace. at /opt/lampp/htdocs/weshare/vendor/symfony/console/Application.php:574)
+[stacktrace]
+#0 /opt/lampp/htdocs/weshare/vendor/symfony/console/Application.php(623): Symfony\\Component\\Console\\Application->findNamespace('apidoc')
+#1 /opt/lampp/htdocs/weshare/vendor/symfony/console/Application.php(236): Symfony\\Component\\Console\\Application->find('apidoc:generate')
+#2 /opt/lampp/htdocs/weshare/vendor/symfony/console/Application.php(148): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#3 /opt/lampp/htdocs/weshare/vendor/laravel/framework/src/Illuminate/Console/Application.php(88): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#4 /opt/lampp/htdocs/weshare/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(121): Illuminate\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#5 /opt/lampp/htdocs/weshare/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#6 {main}
+"} 
